@@ -1,0 +1,21 @@
+elastic:
+  directories:
+    - rules
+    - rules_building_block
+  recursive_directories: true
+  rule_glob_pattern: '*.toml'
+
+
+splunk:
+  directories:
+    - rules
+    - rules_building_block
+  recursive_directories: true
+  rule_glob_pattern: '*.toml'
+
+sigma:
+  directories:
+    - rules
+    - rules_building_block
+  recursive_directories: true
+  rule_glob_pattern: '*.toml'
