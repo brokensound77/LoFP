@@ -11,11 +11,11 @@ splunk:
     - rules
     - rules_building_block
   recursive_directories: true
-  rule_glob_pattern: '*.toml'
+  rule_glob_pattern: '*.yml'
 
 sigma:
   directories:
     - rules
     - rules_building_block
   recursive_directories: true
-  rule_glob_pattern: '*.toml'
+  rule_glob_pattern: '*.yml'
