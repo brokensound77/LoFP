@@ -130,7 +130,7 @@ class TagPage:
 
     def write(self, directory: Path):
         path = directory / 'tags' / self.name / '_index.md'
-        path.parent.mkdir(exist_ok=True, parents=False)
+        path.parent.mkdir(exist_ok=True, parents=True)
         path.write_text(self.formatted)
 
 

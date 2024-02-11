@@ -1,0 +1,126 @@
+# Sample workflow for building and deploying a Hugo site to GitHub Pages
+name: Deploy Hugo site to Pages
+
+on:
+  # Runs on pushes targeting the default branch
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+  schedule:
+    # Runs at 12:01 AM UTC every day
+    - cron: '1 0 * * *'
+
+
+# Sets permissions of the GITHUB_TOKEN to allow deployment to GitHub Pages
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow only one concurrent deployment, skipping runs queued between the run in-progress and latest queued.
+# However, do NOT cancel in-progress runs as we want to allow these production deployments to complete.
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+# Default to bash
+defaults:
+  run:
+    shell: bash
+
+jobs:
+  # Build job
+  build:
+    runs-on: ubuntu-latest
+    env:
+      HUGO_VERSION: 0.111.3
+    steps:
+    - name: Install Hugo CLI
+      run: |
+        wget -O ${{ runner.temp }}/hugo.deb https://github.com/gohugoio/hugo/releases/download/v${HUGO_VERSION}/hugo_extended_${HUGO_VERSION}_linux-amd64.deb \
+        && sudo dpkg -i ${{ runner.temp }}/hugo.deb
+    - name: Install Dart Sass Embedded
+      run: sudo snap install dart-sass-embedded
+      # - name: Checkout
+      #   uses: actions/checkout@v3
+      #   with:
+      #     submodules: recursive
+      #     fetch-depth: 0
+      #### Build pages
+    - name: Checkout LoFP
+      uses: actions/checkout@v4
+      with:
+          submodules: recursive
+          fetch-depth: 0
+
+    - name: Checkout splunk security_content
+      uses: actions/checkout@v4
+      with:
+        repository: splunk/security_content
+        ref: develop
+        path: security_content
+
+    - name: Checkout elastic detection-rules
+      uses: actions/checkout@v4
+      with:
+        repository: elastic/detection-rules
+        ref: main
+        path: detection-rules
+
+    - name: Checkout sigma rules
+      uses: actions/checkout@v4
+      with:
+        repository: SigmaHQ/sigma
+        ref: master
+        path: sigma
+
+    - name: Set up Python 3.8
+      uses: actions/setup-python@v2
+      with:
+        python-version: 3.11
+
+    - name: Install deps
+      run: |
+        python -m pip install --upgrade pip
+        pip cache purge
+        pip install -r requirements.txt
+
+    - name: Generate pages
+      run: |
+        python -m lofp generate build -c splunk splunk/security_content develop -w docs/content -d security_content/detections
+        python -m lofp generate build -c elastic elastic/detection-rules main -w docs/content -d detection-rules/rules -d detection-rules/rules_building_block
+        python -m lofp generate build -c sigma SigmaHQ/sigma master -w docs/content -d sigma/rules
+    ####
+
+    - name: Setup Pages
+      id: pages
+      uses: actions/configure-pages@v3
+    - name: Install Node.js dependencies
+      run: "[[ -f package-lock.json || -f npm-shrinkwrap.json ]] && npm ci || true"
+    - name: Build with Hugo
+      env:
+        # For maximum backward compatibility with Hugo modules
+        HUGO_ENVIRONMENT: production
+        HUGO_ENV: production
+      run: |
+        cd docs && hugo \
+          --gc \
+          --minify \
+          --baseURL "${{ steps.pages.outputs.base_url }}/"
+    - name: Upload artifact
+      uses: actions/upload-pages-artifact@v1
+      with:
+        path: ./docs/public
+
+  # Deployment job
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v2

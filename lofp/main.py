@@ -33,16 +33,17 @@ def generate():
 @generate.command('build')
 @click.argument('repo')
 @click.argument('branch')
-@click.option('--config', '-s', type=click.Choice(CONFIG_CHOICES), help='Config options to use')
+@click.option('--config-name', '-c', type=click.Choice(CONFIG_CHOICES), help='Config options to use')
 @click.option('--directories', '-d', multiple=True, type=Path, help='list of rule directories (Default in config).')
 @click.option('--write-dir', '-w', type=Path, help='directory to write the pages to.')
 @click.pass_context
-def process_elastic(ctx: click.Context, repo: str, branch: str, config: str, directories: tuple[str], write_dir: Path):
+def process_elastic(ctx: click.Context, repo: str, branch: str, config_name: str, directories: tuple[str], write_dir: Path):
     """Process the rules for Elastic."""
     full_config = ctx.obj['config']
-    config = getattr(full_config, config, None)
+    config = getattr(full_config, config_name, None)
     assert config, f'Config not found for {config}!'
     directories = directories or config.directories
     loader = Loader(repo, branch, config.rule_glob_pattern, *directories)
+    click.echo(f'{len(loader.rules)} rules loaded for {config_name} from {" ".join(str(d) for d in directories)}.')
     bundle = PageWriter(loader)
     bundle.write_pages(write_dir or DOCS_CONTENT_DIR)
