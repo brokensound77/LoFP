@@ -1,0 +1,74 @@
+baseURL = 'https://LoFP.github.io/'
+languageCode = 'en-us'
+title = 'LoFP'
+theme = 'hugo-index'
+
+pygmentsUseClasses = true
+enableInlineShortcodes = true
+#PygmentsCodeFences = true
+#PygmentsStyle = "solarized-dark"
+#pygmentsCodefencesGuessSyntax = true
+
+paginate = 10
+rssLimit  = 10  # Maximum number of items in the RSS feed.
+copyright = "Justin Ibarra | @br0k3ns0und"
+
+# googleAnalytics = ""
+# disqusShortname = ""
+
+[site]
+[site.params]
+    searchBoxPlaceholder = "LoFP"
+
+
+[params]
+    showDescriptioninHome = false
+    hideAllTagsinHome = false
+    titleIcon = "index.png"
+    searchBoxPlaceholder = "LoFP"
+
+    [params.headers]
+        key = "Title"
+        value = "Tags"
+
+
+[markup]
+    [markup.highlight]
+        codeFences = true
+        guessSyntax = true
+        lineNos = false
+    [markup.goldmark]
+    [markup.goldmark.renderer]
+        unsafe = true
+
+[permalinks]
+    tags = "@:slug"
+
+[taxonomies]
+    tag = "tags"
+    data_source = "data_sources"
+    rule_source = "rule_sources"
+
+[outputs]
+    home = ["HTML", "RSS", "JSON"]
+
+[privacy]
+    [privacy.vimeo]
+        disabled = false
+        simple = true
+    [privacy.twitter]
+        disabled = false
+        enableDNT = true
+        simple = true
+    [privacy.instagram]
+        disabled = false
+        simple = true
+    [privacy.youtube]
+        disabled = false
+        privacyEnhanced = true
+
+[services]
+    [services.instagram]
+        disableInlineCSS = true
+    [services.twitter]
+        disableInlineCSS = true

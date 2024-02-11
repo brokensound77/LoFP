@@ -1,0 +1,3 @@
+[submodule "docs/themes/hugo-index"]
+	path = docs/themes/hugo-index
+	url = git@github.com:brokensound77/hugo-index.git
