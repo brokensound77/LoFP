@@ -26,3 +26,6 @@ For more details, checkout the release [blog](https://br0k3nlab.com/posts/2024/0
 
 If you are struggling with false positive management during rule creation, consider using the 
 [Zen of Security Rules](https://br0k3nlab.com/resources/zen-of-security-rules/).
+
+
+_A project by_ [@br0k3ns0und](https://twitter.com/br0k3ns0und) - [br0k3nlab](https://br0k3nlab.com/)

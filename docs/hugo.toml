@@ -13,7 +13,7 @@ paginate = 10
 rssLimit  = 10  # Maximum number of items in the RSS feed.
 copyright = "Justin Ibarra | @br0k3ns0und"
 
-# googleAnalytics = ""
+googleAnalytics = "G-8FT7RVYEXR"
 # disqusShortname = ""
 
 [site]
