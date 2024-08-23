@@ -39,13 +39,18 @@ class Loader:
 
     def from_path(self, path: Path) -> Optional[RuleTypes]:
         """Load a single file."""
-        if path.suffix == '.json':
-            contents = json.loads(path.read_text())
-        elif path.suffix == '.toml':
-            contents = pytoml.loads(path.read_text())
-        elif path.suffix in ('.yaml', '.yml'):
-            contents = yaml.safe_load(path.read_text())
-        else:
+        raw = path.read_text()
+        try:
+            if path.suffix == '.json':
+                contents = json.loads(raw)
+            elif path.suffix == '.toml':
+                contents = pytoml.loads(raw)
+            elif path.suffix in ('.yaml', '.yml'):
+                contents = yaml.safe_load(raw)
+            else:
+                return
+        except yaml.YAMLError as e:
+            print(f'error loading: {path} - {e}:\n{raw}')
             return
 
         relative_path = self.relative_to_repo(path)
